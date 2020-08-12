@@ -39,13 +39,14 @@ class BroadcastServer ():
             But raised exceptions will breaks the loop so we will be able to accept new input connection
         """
         self.input_socket.bind(('',self.input_port))
-        self.input_socket.listen(1)
+        self.input_socket.listen(0)
         while self.work:
             input_conn, _ = self.input_socket.accept()
             input_conn.settimeout(30) # If connection with the input socket will be lost, and don`t closed properly, 
                                 # we will never  know that. So we will be blocked in "recv" method forever. So we have to set 30 sec timeout.
                                 # When timeout will be reached, an exception will be raised and breaks reading loop. 
                                 # Sщ we will be able to accept an input connection again
+            logging.debug("Input connection accepted {0}".format(input_conn.getsockname()))
             while self.work:
                 try:
                     data = input_conn.recv(1024)
